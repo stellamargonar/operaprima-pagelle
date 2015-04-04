@@ -33,6 +33,7 @@ public class FramePagAltro extends JFrame {
 	private JTextField anno;
 	private JTextArea repertorio;
 	private JTextArea note;
+	private JTextField assenze;
 
 	private JComboBox<String> sedeBox;
 	private JComboBox<Docente> docenteBox;
@@ -56,8 +57,8 @@ public class FramePagAltro extends JFrame {
 	public void draw() {
 		pa = pagellaDAO.findByStudente(studente, PagellaAltro.class);
 		if (pa == null) {
-            pa = new PagellaAltro();
-        }
+			pa = new PagellaAltro();
+		}
 
 		JPanel pan = new JPanel();
 		pan.setLayout(new BorderLayout());
@@ -86,6 +87,9 @@ public class FramePagAltro extends JFrame {
 
 		pan.add(getLabel("Anno"));
 		pan.add(getAnnoText());
+
+		pan.add(getLabel("Assenze"));
+		pan.add(getAssenzeText());
 
 		pan.add(getLabel("Repertorio"));
 		pan.add(getRepertorioText());
@@ -116,16 +120,16 @@ public class FramePagAltro extends JFrame {
 	}
 
 	private Component getSedeBox() {
-        String[] sedi = { "Ala", "Avio", "Brentonico", "Mori", "Pannone" };
+		String[] sedi = { "Ala", "Avio", "Brentonico", "Mori", "Pannone" };
 		sedeBox = new JComboBox<String>(sedi);
 
 		if (pa.getSede() != null) {
-            for (int i = 0; i < sedi.length; i++) {
-                if (sedi[i].equals(pa.getSede())) {
-                    sedeBox.setSelectedItem(sedi[i]);
-                }
-            }
-        }
+			for (int i = 0; i < sedi.length; i++) {
+				if (sedi[i].equals(pa.getSede())) {
+					sedeBox.setSelectedItem(sedi[i]);
+				}
+			}
+		}
 
 		return sedeBox;
 	}
@@ -133,17 +137,25 @@ public class FramePagAltro extends JFrame {
 	private Component getAnnoText() {
 		anno = new JTextField(30);
 		if (pa != null) {
-            anno.setText(Integer.toString(pa.getAnno()));
-        }
+			anno.setText(Integer.toString(pa.getAnno()));
+		}
 		return anno;
+	}
+
+	private Component getAssenzeText() {
+		assenze = new JTextField(10);
+		if (pa != null) {
+			assenze.setText(Integer.toString(pa.getAssenze()));
+		}
+		return assenze;
 	}
 
 	private Component getRepertorioText() {
 		repertorio = new JTextArea(4, 50);
 		repertorio.setLineWrap(true);
 		if (pa != null) {
-            repertorio.setText(pa.getRepertorio());
-        }
+			repertorio.setText(pa.getRepertorio());
+		}
 		return new JScrollPane(repertorio,
 				JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
 				JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
@@ -153,8 +165,8 @@ public class FramePagAltro extends JFrame {
 		note = new JTextArea(4, 50);
 
 		if (pa != null) {
-            note.setText(pa.getNote());
-        }
+			note.setText(pa.getNote());
+		}
 		note.setFont(Font.getFont(Font.SANS_SERIF));
 		note.setLineWrap(true);
 		return new JScrollPane(note, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
@@ -177,8 +189,8 @@ public class FramePagAltro extends JFrame {
 
 				boolean cond = pa == null;
 				if (cond) {
-                    pa = new PagellaAltro();
-                }
+					pa = new PagellaAltro();
+				}
 
 				pa.setStudente(studente);
 				pa.setDocente((Docente) docenteBox.getSelectedItem());
@@ -186,6 +198,7 @@ public class FramePagAltro extends JFrame {
 				pa.setAnno(Integer.parseInt(anno.getText()));
 				pa.setRepertorio(repertorio.getText());
 				pa.setNote(note.getText());
+				pa.setAssenze((Integer.parseInt(assenze.getText())));
 
 				pa = pagellaDAO.save(pa);
 				closeWindow();
@@ -196,7 +209,7 @@ public class FramePagAltro extends JFrame {
 			private boolean validate() {
 				try {
 					int i = Integer.parseInt(anno.getText());
-					i++;
+					i = Integer.parseInt(assenze.getText());
 				} catch (NumberFormatException ex) {
 					return false;
 				}
@@ -210,8 +223,8 @@ public class FramePagAltro extends JFrame {
 
 			public void actionPerformed(ActionEvent e) {
 				if (pa.getStudente() != null) {
-                    pagellaDAO.delete(pa);
-                }
+					pagellaDAO.delete(pa);
+				}
 				closeWindow();
 			}
 		});
