@@ -34,6 +34,7 @@ import org.springframework.beans.factory.annotation.Value;
 public class FramePagCoro extends JFrame {
 
 	private JTextField anno;
+	private JTextField assenze;
 	private JTextArea repertorio;
 	private JTextArea note;
 	private ArrayList<JComboBox<Integer>> competenzeBox;
@@ -61,8 +62,8 @@ public class FramePagCoro extends JFrame {
 	public void draw() {
 		pc = pagellaDAO.findByStudente(studente, PagellaCoro.class);
 		if (pc == null) {
-            pc = new PagellaCoro();
-        }
+			pc = new PagellaCoro();
+		}
 
 		JPanel pan = new JPanel();
 		pan.setLayout(new BorderLayout());
@@ -93,6 +94,9 @@ public class FramePagCoro extends JFrame {
 		pan.add(getLabel("Anno"));
 		pan.add(getAnnoText());
 
+		pan.add(getLabel("Assenze"));
+		pan.add(getAssenzeText());
+
 		pan.add(getLabel("Repertorio"));
 		pan.add(getRepertorioText());
 
@@ -111,7 +115,7 @@ public class FramePagCoro extends JFrame {
 			pan.add(getLabel(competenze.get(i)));
 
 			JPanel container = new JPanel();
-            Integer[] values = { 0, 1, 2, 3, 4, 5 };
+			Integer[] values = { 0, 1, 2, 3, 4, 5 };
 			JComboBox<Integer> combo = new JComboBox<Integer>(values);
 			combo.setSelectedItem(1);
 			System.out.println("competenza " + i + ", value " + 1);
@@ -140,16 +144,16 @@ public class FramePagCoro extends JFrame {
 	}
 
 	private Component getSedeBox() {
-        String[] sedi = { "Ala", "Avio", "Brentonico", "Mori", "Pannone" };
+		String[] sedi = { "Ala", "Avio", "Brentonico", "Mori", "Pannone" };
 		sedeBox = new JComboBox<String>(sedi);
 
 		if (pc.getSede() != null) {
-            for (int i = 0; i < sedi.length; i++) {
-                if (sedi[i].equals(pc.getSede())) {
-                    sedeBox.setSelectedItem(sedi[i]);
-                }
-            }
-        }
+			for (int i = 0; i < sedi.length; i++) {
+				if (sedi[i].equals(pc.getSede())) {
+					sedeBox.setSelectedItem(sedi[i]);
+				}
+			}
+		}
 
 		return sedeBox;
 	}
@@ -157,17 +161,25 @@ public class FramePagCoro extends JFrame {
 	private Component getAnnoText() {
 		anno = new JTextField(30);
 		if (pc != null) {
-            anno.setText(Integer.toString(pc.getAnno()));
-        }
+			anno.setText(Integer.toString(pc.getAnno()));
+		}
 		return anno;
+	}
+
+	private Component getAssenzeText() {
+		assenze = new JTextField(30);
+		if (pc != null) {
+			assenze.setText(Integer.toString(pc.getAssenze()));
+		}
+		return assenze;
 	}
 
 	private Component getRepertorioText() {
 		repertorio = new JTextArea(4, 50);
 		repertorio.setWrapStyleWord(false);
 		if (pc != null) {
-            repertorio.setText(pc.getRepertorio());
-        }
+			repertorio.setText(pc.getRepertorio());
+		}
 		repertorio.setLineWrap(true);
 		return new JScrollPane(repertorio,
 				JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
@@ -177,8 +189,8 @@ public class FramePagCoro extends JFrame {
 	private Component getNoteText() {
 		note = new JTextArea(4, 50);
 		if (pc != null) {
-            note.setText(pc.getNote());
-        }
+			note.setText(pc.getNote());
+		}
 		note.setFont(Font.getFont(Font.SANS_SERIF));
 		note.setLineWrap(true);
 		return new JScrollPane(note, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
@@ -201,9 +213,9 @@ public class FramePagCoro extends JFrame {
 
 				boolean cond = pc == null;
 				if (cond) {
-                    // nuova pagella
-                    pc = new PagellaCoro();
-                }
+					// nuova pagella
+					pc = new PagellaCoro();
+				}
 
 				pc.setStudente(studente);
 				pc.setDocente((Docente) docenteBox.getSelectedItem());
@@ -211,6 +223,7 @@ public class FramePagCoro extends JFrame {
 				pc.setAnno(Integer.parseInt(anno.getText()));
 				pc.setRepertorio(repertorio.getText());
 				pc.setNote(note.getText());
+				pc.setAssenze(Integer.parseInt(assenze.getText()));
 
 				pc = pagellaDAO.save(pc);
 				closeWindow();
@@ -221,7 +234,7 @@ public class FramePagCoro extends JFrame {
 			private boolean validate() {
 				try {
 					int i = Integer.parseInt(anno.getText());
-					i++;
+					i = Integer.parseInt(assenze.getText());
 				} catch (NumberFormatException ex) {
 					return false;
 				}
@@ -236,8 +249,8 @@ public class FramePagCoro extends JFrame {
 
 			public void actionPerformed(ActionEvent e) {
 				if (pc.getStudente() != null) {
-                    pagellaDAO.delete(pc);
-                }
+					pagellaDAO.delete(pc);
+				}
 				closeWindow();
 			}
 		});
