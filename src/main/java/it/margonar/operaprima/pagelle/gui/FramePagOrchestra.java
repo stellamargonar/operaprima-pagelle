@@ -36,6 +36,7 @@ import org.springframework.beans.factory.annotation.Value;
 public class FramePagOrchestra extends JFrame {
 
 	private JTextField anno;
+	private JTextField assenze;
 	private JTextArea repertorio;
 	private JTextArea note;
 	private ArrayList<JComboBox<Integer>> competenzeBox;
@@ -66,8 +67,8 @@ public class FramePagOrchestra extends JFrame {
 	public void draw() {
 		po = pagellaDAO.findByStudente(studente, PagellaOrchestra.class);
 		if (po == null) {
-            po = new PagellaOrchestra();
-        }
+			po = new PagellaOrchestra();
+		}
 
 		JPanel pan = new JPanel();
 		pan.setLayout(new BorderLayout());
@@ -100,6 +101,9 @@ public class FramePagOrchestra extends JFrame {
 
 		pan.add(getLabel("Anno"));
 		pan.add(getAnnoText());
+
+		pan.add(getLabel("Assenze"));
+		pan.add(getAssenzeText());
 
 		pan.add(getLabel("Repertorio"));
 		pan.add(getTestiText());
@@ -166,16 +170,16 @@ public class FramePagOrchestra extends JFrame {
 	}
 
 	private Component getSedeBox() {
-        String[] sedi = { "Ala", "Avio", "Brentonico", "Mori", "Pannone" };
+		String[] sedi = { "Ala", "Avio", "Brentonico", "Mori", "Pannone" };
 		sedeBox = new JComboBox<String>(sedi);
 
 		if (po.getSede() != null) {
-            for (int i = 0; i < sedi.length; i++) {
-                if (sedi[i].equals(po.getSede())) {
-                    sedeBox.setSelectedItem(sedi[i]);
-                }
-            }
-        }
+			for (int i = 0; i < sedi.length; i++) {
+				if (sedi[i].equals(po.getSede())) {
+					sedeBox.setSelectedItem(sedi[i]);
+				}
+			}
+		}
 
 		return sedeBox;
 	}
@@ -183,17 +187,25 @@ public class FramePagOrchestra extends JFrame {
 	private Component getAnnoText() {
 		anno = new JTextField(30);
 		if (po != null) {
-            anno.setText(Integer.toString(po.getAnno()));
-        }
+			anno.setText(Integer.toString(po.getAnno()));
+		}
 		return anno;
+	}
+
+	private Component getAssenzeText() {
+		assenze = new JTextField(30);
+		if (po != null) {
+			assenze.setText(Integer.toString(po.getAssenze()));
+		}
+		return assenze;
 	}
 
 	private Component getTestiText() {
 		repertorio = new JTextArea(4, 50);
 		repertorio.setLineWrap(true);
 		if (po != null) {
-            repertorio.setText(po.getRepertorio());
-        }
+			repertorio.setText(po.getRepertorio());
+		}
 		return new JScrollPane(repertorio,
 				JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
 				JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
@@ -202,8 +214,8 @@ public class FramePagOrchestra extends JFrame {
 	private Component getNoteText() {
 		note = new JTextArea(4, 50);
 		if (po != null) {
-            note.setText(po.getNote());
-        }
+			note.setText(po.getNote());
+		}
 		note.setFont(Font.getFont(Font.SANS_SERIF));
 		note.setLineWrap(true);
 		return new JScrollPane(note, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
@@ -226,9 +238,9 @@ public class FramePagOrchestra extends JFrame {
 
 				boolean cond = po == null;
 				if (cond) {
-                    // nuova pagella
-                    po = new PagellaOrchestra();
-                }
+					// nuova pagella
+					po = new PagellaOrchestra();
+				}
 
 				po.setStudente(studente);
 				po.setDocente((Docente) docenteBox.getSelectedItem());
@@ -237,6 +249,7 @@ public class FramePagOrchestra extends JFrame {
 				po.setAnno(Integer.parseInt(anno.getText()));
 				po.setRepertorio(repertorio.getText());
 				po.setNote(note.getText());
+				po.setAssenze(Integer.parseInt(assenze.getText()));
 
 				po = pagellaDAO.save(po);
 				closeWindow();
@@ -247,7 +260,7 @@ public class FramePagOrchestra extends JFrame {
 			private boolean validate() {
 				try {
 					int i = Integer.parseInt(anno.getText());
-					i++;
+					i = Integer.parseInt(assenze.getText());
 				} catch (NumberFormatException ex) {
 					return false;
 				}
@@ -262,8 +275,8 @@ public class FramePagOrchestra extends JFrame {
 
 			public void actionPerformed(ActionEvent e) {
 				if (po.getStudente() != null) {
-                    pagellaDAO.delete(po);
-                }
+					pagellaDAO.delete(po);
+				}
 				closeWindow();
 			}
 		});

@@ -36,6 +36,7 @@ import org.springframework.beans.factory.annotation.Value;
 public class FramePagLaboratorio extends JFrame {
 
 	private JTextField anno;
+	private JTextField assenze;
 	private JTextArea repertorio;
 	private JTextArea note;
 	private ArrayList<JComboBox<Integer>> competenzeBox;
@@ -66,8 +67,8 @@ public class FramePagLaboratorio extends JFrame {
 	public void draw() {
 		pl = pagellaDAO.findByStudente(studente, PagellaLaboratorio.class);
 		if (pl == null) {
-            pl = new PagellaLaboratorio();
-        }
+			pl = new PagellaLaboratorio();
+		}
 
 		JPanel pan = new JPanel();
 		pan.setLayout(new BorderLayout());
@@ -101,6 +102,9 @@ public class FramePagLaboratorio extends JFrame {
 		pan.add(getLabel("Anno"));
 		pan.add(getAnnoText());
 
+		pan.add(getLabel("Assenze"));
+		pan.add(getAssenzeText());
+
 		pan.add(getLabel("Repertorio"));
 		pan.add(getTestiText());
 
@@ -119,7 +123,7 @@ public class FramePagLaboratorio extends JFrame {
 			pan.add(getLabel(competenze.get(i)));
 
 			JPanel container = new JPanel();
-            Integer[] values = { 0, 1, 2, 3, 4, 5 };
+			Integer[] values = { 0, 1, 2, 3, 4, 5 };
 			JComboBox<Integer> combo = new JComboBox<Integer>(values);
 			combo.setSelectedItem(1);
 			System.out.println("competenza " + i + ", value " + 1);
@@ -166,16 +170,16 @@ public class FramePagLaboratorio extends JFrame {
 	}
 
 	private Component getSedeBox() {
-        String[] sedi = { "Ala", "Avio", "Brentonico", "Mori", "Pannone" };
+		String[] sedi = { "Ala", "Avio", "Brentonico", "Mori", "Pannone" };
 		sedeBox = new JComboBox(sedi);
 
 		if (pl.getSede() != null) {
-            for (int i = 0; i < sedi.length; i++) {
-                if (sedi[i].equals(pl.getSede())) {
-                    sedeBox.setSelectedItem(sedi[i]);
-                }
-            }
-        }
+			for (int i = 0; i < sedi.length; i++) {
+				if (sedi[i].equals(pl.getSede())) {
+					sedeBox.setSelectedItem(sedi[i]);
+				}
+			}
+		}
 
 		return sedeBox;
 	}
@@ -183,17 +187,25 @@ public class FramePagLaboratorio extends JFrame {
 	private Component getAnnoText() {
 		anno = new JTextField(30);
 		if (pl != null) {
-            anno.setText(Integer.toString(pl.getAnno()));
-        }
+			anno.setText(Integer.toString(pl.getAnno()));
+		}
 		return anno;
+	}
+
+	private Component getAssenzeText() {
+		assenze = new JTextField(30);
+		if (pl != null) {
+			assenze.setText(Integer.toString(pl.getAssenze()));
+		}
+		return assenze;
 	}
 
 	private Component getTestiText() {
 		repertorio = new JTextArea(4, 50);
 		repertorio.setWrapStyleWord(false);
 		if (pl != null) {
-            repertorio.setText(pl.getRepertorio());
-        }
+			repertorio.setText(pl.getRepertorio());
+		}
 		repertorio.setLineWrap(true);
 		return new JScrollPane(repertorio,
 				JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
@@ -203,8 +215,8 @@ public class FramePagLaboratorio extends JFrame {
 	private Component getNoteText() {
 		note = new JTextArea(4, 50);
 		if (pl != null) {
-            note.setText(pl.getNote());
-        }
+			note.setText(pl.getNote());
+		}
 		note.setFont(Font.getFont(Font.SANS_SERIF));
 		note.setLineWrap(true);
 		return new JScrollPane(note, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
@@ -227,9 +239,9 @@ public class FramePagLaboratorio extends JFrame {
 
 				boolean cond = pl == null;
 				if (cond) {
-                    // nuova pagella
-                    pl = new PagellaLaboratorio();
-                }
+					// nuova pagella
+					pl = new PagellaLaboratorio();
+				}
 
 				pl.setStudente(studente);
 				pl.setDocente((Docente) docenteBox.getSelectedItem());
@@ -239,6 +251,7 @@ public class FramePagLaboratorio extends JFrame {
 				pl.setAnno(Integer.parseInt(anno.getText()));
 				pl.setRepertorio(repertorio.getText());
 				pl.setNote(note.getText());
+				pl.setAssenze(Integer.parseInt(assenze.getText()));
 
 				pl = pagellaDAO.save(pl);
 				closeWindow();
@@ -249,7 +262,7 @@ public class FramePagLaboratorio extends JFrame {
 			private boolean validate() {
 				try {
 					int i = Integer.parseInt(anno.getText());
-					i++;
+					i = Integer.parseInt(assenze.getText());
 				} catch (NumberFormatException ex) {
 					return false;
 				}
@@ -264,8 +277,8 @@ public class FramePagLaboratorio extends JFrame {
 
 			public void actionPerformed(ActionEvent e) {
 				if (pl.getStudente() != null) {
-                    pagellaDAO.delete(pl);
-                }
+					pagellaDAO.delete(pl);
+				}
 				closeWindow();
 			}
 		});
