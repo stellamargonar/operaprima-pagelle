@@ -45,7 +45,7 @@ public class PagellaCoro {
 	private String note;
 
 	@Column(name = "assenze")
-	private int assenze;
+	private Integer assenze;
 
 	@Column(name = "c1")
 	private int c1;
@@ -122,11 +122,11 @@ public class PagellaCoro {
 		return true;
 	}
 
-	public int getAssenze() {
+	public Integer getAssenze() {
 		return assenze;
 	}
 
-	public void setAssenze(int assenze) {
+	public void setAssenze(Integer assenze) {
 		this.assenze = assenze;
 	}
 

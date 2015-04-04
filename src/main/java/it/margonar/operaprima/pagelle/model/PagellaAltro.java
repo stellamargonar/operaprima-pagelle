@@ -43,7 +43,7 @@ public class PagellaAltro {
 	private Docente docente;
 
 	@Column(name = "assenze")
-	private int assenze;
+	private Integer assenze;
 
 	@Override
 	public int hashCode() {
@@ -70,11 +70,11 @@ public class PagellaAltro {
 		return true;
 	}
 
-	public int getAssenze() {
+	public Integer getAssenze() {
 		return assenze;
 	}
 
-	public void setAssenze(int assenze) {
+	public void setAssenze(Integer assenze) {
 		this.assenze = assenze;
 	}
 
