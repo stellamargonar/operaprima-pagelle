@@ -35,6 +35,7 @@ import org.springframework.beans.factory.annotation.Value;
 public class FramePagStrumento extends JFrame {
 
 	private JTextField anno;
+	private JTextField assenze;
 	private JTextArea testi;
 	private JTextArea repertorio;
 	private JTextArea note;
@@ -66,8 +67,8 @@ public class FramePagStrumento extends JFrame {
 	public void draw() {
 		ps = pagellaDAO.findByStudente(studente, PagellaStrumento.class);
 		if (ps == null) {
-            ps = new PagellaStrumento();
-        }
+			ps = new PagellaStrumento();
+		}
 
 		JPanel pan = new JPanel();
 		pan.setLayout(new BorderLayout());
@@ -101,6 +102,9 @@ public class FramePagStrumento extends JFrame {
 		pan.add(getLabel("Anno"));
 		pan.add(getAnnoText());
 
+		pan.add(getLabel("Assenze"));
+		pan.add(getAssenzeText());
+
 		pan.add(getLabel("Testi"));
 		pan.add(getTestiText());
 
@@ -124,7 +128,7 @@ public class FramePagStrumento extends JFrame {
 			pan.add(getLabel(competenze.get(i)));
 
 			JPanel container = new JPanel();
-            Integer[] values = { 0, 1, 2, 3, 4, 5 };
+			Integer[] values = { 0, 1, 2, 3, 4, 5 };
 			JComboBox<Integer> combo = new JComboBox<Integer>(values);
 			combo.setSelectedItem(ps.getCompetenza(i));
 			System.out.println("competenza " + i + ", value "
@@ -172,16 +176,16 @@ public class FramePagStrumento extends JFrame {
 	}
 
 	private Component getSedeBox() {
-        String[] sedi = { "Ala", "Avio", "Brentonico", "Mori", "Pannone" };
+		String[] sedi = { "Ala", "Avio", "Brentonico", "Mori", "Pannone" };
 		sedeBox = new JComboBox<String>(sedi);
 
 		if (ps.getSede() != null) {
-            for (int i = 0; i < sedi.length; i++) {
-                if (sedi[i].equals(ps.getSede())) {
-                    sedeBox.setSelectedItem(sedi[i]);
-                }
-            }
-        }
+			for (int i = 0; i < sedi.length; i++) {
+				if (sedi[i].equals(ps.getSede())) {
+					sedeBox.setSelectedItem(sedi[i]);
+				}
+			}
+		}
 
 		return sedeBox;
 	}
@@ -189,17 +193,25 @@ public class FramePagStrumento extends JFrame {
 	private Component getAnnoText() {
 		anno = new JTextField(30);
 		if (ps != null) {
-            anno.setText(Integer.toString(ps.getAnno()));
-        }
+			anno.setText(Integer.toString(ps.getAnno()));
+		}
 		return anno;
+	}
+
+	private Component getAssenzeText() {
+		assenze = new JTextField(30);
+		if (ps != null) {
+			assenze.setText(Integer.toString(ps.getAssenze()));
+		}
+		return assenze;
 	}
 
 	private Component getTestiText() {
 		testi = new JTextArea(4, 50);
 		testi.setLineWrap(true);
 		if (ps != null) {
-            testi.setText(ps.getTesti());
-        }
+			testi.setText(ps.getTesti());
+		}
 		return new JScrollPane(testi, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
 				JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 	}
@@ -208,8 +220,8 @@ public class FramePagStrumento extends JFrame {
 		repertorio = new JTextArea(4, 50);
 		repertorio.setLineWrap(true);
 		if (ps != null) {
-            repertorio.setText(ps.getRepertorio());
-        }
+			repertorio.setText(ps.getRepertorio());
+		}
 		return new JScrollPane(repertorio,
 				JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
 				JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
@@ -219,8 +231,8 @@ public class FramePagStrumento extends JFrame {
 		note = new JTextArea(4, 50);
 		note.setLineWrap(true);
 		if (ps != null) {
-            note.setText(ps.getNote());
-        }
+			note.setText(ps.getNote());
+		}
 		return new JScrollPane(note, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
 				JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 	}
@@ -241,9 +253,9 @@ public class FramePagStrumento extends JFrame {
 
 				boolean cond = ps == null;
 				if (cond) {
-                    // nuova pagella
-                    ps = new PagellaStrumento();
-                }
+					// nuova pagella
+					ps = new PagellaStrumento();
+				}
 				System.out.println("studente: " + studente);
 				ps.setStudente(studente);
 				ps.setDocente((Docente) docenteBox.getSelectedItem());
@@ -253,6 +265,7 @@ public class FramePagStrumento extends JFrame {
 				ps.setTesti(testi.getText());
 				ps.setRepertorio(repertorio.getText());
 				ps.setNote(note.getText());
+				ps.setAssenze(Integer.parseInt(assenze.getText()));
 
 				List<Integer> values = new ArrayList<Integer>();
 				for (int i = 0; i < competenze.size(); i++) {
@@ -270,7 +283,7 @@ public class FramePagStrumento extends JFrame {
 			private boolean validate() {
 				try {
 					int i = Integer.parseInt(anno.getText());
-					i++;
+					i = Integer.parseInt(assenze.getText());
 				} catch (NumberFormatException ex) {
 					return false;
 				}
@@ -285,8 +298,8 @@ public class FramePagStrumento extends JFrame {
 
 			public void actionPerformed(ActionEvent e) {
 				if (ps.getStudente() != null) {
-                    pagellaDAO.delete(ps);
-                }
+					pagellaDAO.delete(ps);
+				}
 				closeWindow();
 			}
 		});
